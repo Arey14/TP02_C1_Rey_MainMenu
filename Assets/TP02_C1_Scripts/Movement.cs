@@ -2,8 +2,9 @@ using UnityEngine;
 
 public class Movement : MonoBehaviour
 {
-    public float speed = 5f;
     private SpriteRenderer sr;
+    [SerializeField] private float speed = 5f;
+    [SerializeField] private float rotationAngle = 10.0f;
     [SerializeField] private KeyCode KeyCodeUp = KeyCode.W;
     [SerializeField] private KeyCode KeyCodeDown = KeyCode.S;
     [SerializeField] private KeyCode KeyCodeLeft = KeyCode.A;
@@ -11,20 +12,18 @@ public class Movement : MonoBehaviour
     [SerializeField] private KeyCode KeyCodeRotateLeft = KeyCode.Q;
     [SerializeField] private KeyCode KeyCodeRotateRight = KeyCode.E;
     [SerializeField] private KeyCode KeyCodeChangeColor = KeyCode.R;
-
-    void Start()
+    void Awake()
     {
         sr = GetComponent<SpriteRenderer>();
     }
 
     void Update()
-    {
+    {   
+
+        // 1. Logica Movimiento
         float step = speed * Time.deltaTime;
 
-        float rotationangle = 10.0f;
-
-        // Logica movimiento
-
+        // 2. Lógica movimiento
         if (Input.GetKey(KeyCodeUp))
         {
             transform.Translate(Vector2.up * step);
@@ -42,20 +41,32 @@ public class Movement : MonoBehaviour
             transform.Translate(Vector2.right * step);
         }
     
-        // Logica giritos
+        // 3. Lógica giritos
         if (Input.GetKeyDown(KeyCodeRotateLeft))
         {
-            transform.Rotate(0.0f, 0.0f, rotationangle, Space.Self);
+            transform.Rotate(0.0f, 0.0f, rotationAngle * Time.timeScale, Space.Self);
         }
 
         if (Input.GetKeyDown(KeyCodeRotateRight))
         {
-            transform.Rotate(0.0f, 0.0f, -rotationangle, Space.Self);
+            transform.Rotate(0.0f, 0.0f, -rotationAngle * Time.timeScale, Space.Self);
         }
-        // Logica colorcitos
-        if (Input.GetKeyUp(KeyCodeChangeColor))
+        
+        // 4. Lógica colorcitos
+        if (Input.GetKeyUp(KeyCodeChangeColor) && Time.timeScale != 0f)
         {
             sr.color = new Color(Random.value, Random.value, Random.value);
         }
+    }
+
+    // 5. Lógica velocidad (Settings / Sliders)
+    public void SetSpeed(float newSpeed)
+    {
+        speed = newSpeed;
+    }
+
+    public float GetSpeed()
+    {
+        return speed;
     }
 }
